@@ -1,9 +1,10 @@
-# pku
-北京大学相关作业等
+# pku选课
 
+## 项目介绍：
+选课系统
 
-## 具体文档请查看各个子项目文档
-
+## 总体设计
+- 只有根目录下config允许从local_config导入配置，其余必须从config而非local_config导入配置 
 
 ##  目录说明    
 ├── xuanke //选课系统       
@@ -17,6 +18,14 @@
 │   ├── manage.py  //入口文件   
 │   ├── validcode.py  //验证码识别   
 │   ├── xuanke.md  //说明文档  
-│   └── xuanke.py  //选课系统主逻辑   
-├── README.md  //说明文档    
-└── requirements.txt  //依赖包   
+│   └── xuanke.py  //选课系统主逻辑 
+
+
+## 部署
+      pip install -r requirements.txt
+      下载相应平台的 phantomjs或者 chromedriver
+
+## 运行
+    填入自己密码
+     python3 manage.py
+
