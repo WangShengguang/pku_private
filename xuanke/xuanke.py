@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import time
 import traceback
@@ -8,18 +9,10 @@ import requests.cookies
 import selenium
 from lxml import etree
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.chrome.options import Options
-from wxpy import *
 
 from config import platform_name, get_driver, data_dir
 from info import Info
 from validcode import get_validcode
-
-chrome_options = Options()
-chrome_options.add_argument('--headless')
-
-# 验证码使用
-
 
 headers = {"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
            "Accept-Encoding": "gzip,deflate",
@@ -176,8 +169,8 @@ class Xuanke(object):
         code_url = self.driver.find_element_by_id('imgname').get_attribute("src")
         print("code_url： {}".format(code_url))
         pic_name = "code_pic_wsg.png"
-        self.download_code_picture(pic_name, code_url)
-        code = get_validcode(data_dir, pic_name)
+        self.download_code_picture(pic_name, code_url)  # 下载验证码
+        code = get_validcode(data_dir, pic_name)  # 识别验证码
         print("identifying code: {}".format(code))
         self.driver.find_element_by_id('validCode').clear()
         self.driver.find_element_by_id('validCode').send_keys(code)
@@ -233,9 +226,10 @@ class Xuanke(object):
                 time.sleep(self.course_fresh_frequency)  # 每course_fresh_frequency刷新一次
             except Exception:
                 print(traceback.format_exc())
-                print("异常，接下来暂停10s")
-                time.sleep(10)
-                print("确定暂停10s了吗\n")
+                logging.error(traceback.format_exc())
+                print("异常，接下来暂停{}s".format(self.course_fresh_frequency))
+                time.sleep(self.course_fresh_frequency)
+                print("确定暂停{}s了吗\n".format(self.course_fresh_frequency))
 
     def run(self):
         logging.info('process %s start ')
