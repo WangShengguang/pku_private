@@ -22,10 +22,12 @@
 
 
 ## 部署
+      新建 xuanke/utils目录，下载相应平台的 phantomjs或者 chromedriver
+      并将名字改为config文件指定名
       pip install -r requirements.txt
-      下载相应平台的 phantomjs或者 chromedriver
+      
 
 ## 运行
-    填入自己密码
+     将账号密码修改为自己的
      python3 manage.py
 

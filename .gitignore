@@ -13,4 +13,6 @@ local_config.py
 
 # 本地文件
 local/*
-
+chromedriver_mac
+chromedriver_win.exe
+phantomjs_linux

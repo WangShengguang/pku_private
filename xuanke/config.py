@@ -8,6 +8,7 @@ from local_config import LocalConfig
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(cur_dir, "data")
+
 if not os.path.exists(data_dir):
     os.makedirs(data_dir)
 
@@ -21,6 +22,8 @@ else:
     driver_name = 'chromedriver_mac'
 
 driver_path = os.path.join(cur_dir, 'utils', driver_name)
+
+assert os.path.exists(driver_path)
 
 
 def get_driver():
