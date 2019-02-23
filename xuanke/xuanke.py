@@ -126,13 +126,16 @@ class Xuanke(object):
 
     def accept_alert(self):
         """ 弹窗确认"""
+        alert_text = ""
         if platform_name == "Linux":
             self.driver.execute_script("window.confirm = function(msg) { return true; }")
         else:  # mac,windows
             alert = self.driver.switch_to.alert  # '''获取alert对话框'''
             time.sleep(2)  # '''添加等待时间'''
-            print(alert.text)  # 打印警告对话框内容
+            alert_text = alert.text
+            print(alert_text)  # 打印警告对话框内容
             alert.accept()  # alert对话框属于警告对话框，我们这里只能接受弹窗
+        return alert_text
 
     def fresh_course(self, course_name):
         """点击刷新按钮 course_name:
@@ -146,12 +149,10 @@ class Xuanke(object):
             self.accept_alert()  # 弹窗确认
             print('{}刷新成功'.format(course_name))
         except:
-            # print(traceback.format_exc())
-            # print('{}刷新失败'.format(course_name))
             time.sleep(1)
         fresh_limit_id = self.driver.find_element_by_xpath(
-            "//a[contains(@onclick, 'confirmSelect') and contains(@onclick, '{}')]".format(course_name)).get_attribute(
-            "id")
+            "//a[contains(@onclick, 'confirmSelect') and contains(@onclick, '{}')]".format(
+                course_name)).get_attribute("id")
         if not fresh_limit_id:
             if self.driver.find_element_by_xpath(
                     "//a[contains(@onclick, 'confirmSelect') and contains(@onclick, '{}')]".format(
@@ -184,8 +185,8 @@ class Xuanke(object):
         self.driver.find_element_by_xpath(
             "//a[contains(@onclick, 'confirmSelect') and contains(@onclick, '{}')]/span[text()='补选']".format(
                 course_name)).click()
-        self.accept_alert()  # 弹窗确认
-        print("{}补选成功!".format(course_name))
+        alert_text = self.accept_alert()  # 弹窗确认
+        print("** {} 补选成功! alert:{}\n".format(course_name, alert_text))
         return True
 
     def detail_handle(self):
@@ -220,22 +221,21 @@ class Xuanke(object):
             try:
                 if self.auto_select:  # 自动选课
                     for course_name in self.listening_course:
-                        selected_count, all_count = self.fresh_course(
-                            course_name)  # 刷新课程# 机器学习 refreshLimit77，自然语言处理 refreshLimit99
+                        selected_count, all_count = self.fresh_course(course_name)
                         if selected_count < all_count:
                             self.select_course(course_name)  # 补选
                 if self.run_seconds % self.page_fresh_frequency == 0:  # 每page_fresh_frequency刷新一次
-                    self.detail_handle()  # 补选页面详情处理
+                    self.detail_handle()  # 补选页面详情处理，解析详情页后发通知等
                     time.sleep(self.page_fresh_frequency)
                     self.run_seconds += self.page_fresh_frequency
                     self.driver.refresh()  # 整体刷新
                 self.run_seconds += self.course_fresh_frequency
                 time.sleep(self.course_fresh_frequency)  # 每course_fresh_frequency刷新一次
-            except Exception as e:
+            except Exception:
                 print(traceback.format_exc())
-                print("接下来暂停10s")
+                print("异常，接下来暂停10s")
                 time.sleep(10)
-                print("确定暂停10s了吗")
+                print("确定暂停10s了吗\n")
 
     def run(self):
         logging.info('process %s start ')
